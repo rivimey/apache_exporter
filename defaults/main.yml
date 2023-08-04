@@ -1,0 +1,26 @@
+---
+
+# The apache-exporter release to be installed
+apache_exporter_release_tag: "latest"
+
+# The URL from which download the apache-exporter release
+apache_exporter_release_url: ""
+
+# apache-exporter user and group
+apache_exporter_user: "apache_exporter"
+apache_exporter_group: "apache_exporter"
+
+# Directory containing the downloaded apache-exporter release
+apache_exporter_install_path: "/opt"
+
+# Directory to which symlink the installed apache-exporter binaries
+apache_exporter_bin_path: "/usr/local/bin"
+
+# apache-exporter listen address
+apache_exporter_listen_address: "127.0.0.1:9100"
+
+# apache-exporter log level
+apache_exporter_log_level: "info"
+
+# Additional command-line arguments to be added to the apache-exporter unit
+apache_exporter_additional_cli_args: ""

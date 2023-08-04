@@ -1,0 +1,17 @@
+---
+
+- name: restart apache_exporter
+  service:
+    name: apache_exporter
+    state: restarted
+
+- name: reload apache_exporter
+  service:
+    name: apache_exporter
+    state: reloaded
+
+- name: reload systemd and restart apache_exporter
+  command: systemctl daemon-reload
+  notify: restart apache_exporter
+  tags:
+    - skip_ansible_lint

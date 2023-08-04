@@ -1,0 +1,10 @@
+---
+
+- include: install-apache-exporter.yml
+- include: configure-apache-exporter.yml
+
+- name: Start and enable the apache-exporter service
+  service:
+    name: apache_exporter
+    state: started
+    enabled: true

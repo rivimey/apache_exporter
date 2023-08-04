@@ -1,0 +1,56 @@
+---
+
+- name: Create the apache-exporter group
+  group:
+    name: "{{ apache_exporter_group }}"
+    state: present
+
+- name: Create the apache-exporter user
+  user:
+    name: "{{ apache_exporter_user }}"
+    state: present
+
+- include: github-apache-exporter-release.yml
+  when: not apache_exporter_release_url
+
+- name: Make sure the apache-exporter install directory exists
+  file:
+    dest: "{{ apache_exporter_install_path }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: 0755
+    recurse: true
+
+- name: Get the name of the apache-exporter release archive
+  set_fact:
+    _apache_exporter_archive: "{{ apache_exporter_release_url | basename }}"
+
+- name: Set the apache-exporter installation path
+  set_fact:
+    _apache_exporter_install_path: "{{ apache_exporter_install_path }}/{{ _apache_exporter_archive | regex_replace('\\.zip|\\.gz|\\.tar|\\.tgz|\\.bzip','') }}"
+
+- name: Download the apache-exporter
+  unarchive:
+    src: "{{ apache_exporter_release_url }}"
+    dest: "{{ apache_exporter_install_path }}"
+    creates: "{{ _apache_exporter_install_path }}/apache_exporter"
+    remote_src: yes
+  notify: restart apache_exporter
+
+- name: Create node-exporter bin directory
+  ansible.builtin.file:
+    path: "{{ apache_exporter_bin_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Symlink the apache-exporter binaries
+  file:
+    src: "{{ _apache_exporter_install_path }}/{{ item }}"
+    dest: "{{ apache_exporter_bin_path }}/{{ item }}"
+    state: link
+  notify: restart apache_exporter
+  with_items:
+    - apache_exporter
